@@ -11,7 +11,7 @@ class Rooms {
         this.room.users.filter(user => user != socket_id);
     }
 
-    findRoom() {
+    findNewRoom() {
         return this.room;
     }
 }

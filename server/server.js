@@ -1,6 +1,13 @@
 const app = require('express')();
 const httpServer = require('http').createServer(app);
-const io = require('socket.io')(httpServer);
+
+// The cors config is needed so that HTTP requests sent by the frontend are allowed to reach the server.
+const io = require('socket.io')(httpServer, {
+    cors: {
+        origin: 'http://localhost:3000',
+    }
+});
+
 const port = process.env.PORT || 8000;
 
 const { Message } = require('./db/model/message');
@@ -38,6 +45,11 @@ app.get('/message', async (req, res) => {
         console.log(err);
         res.send('message failed to save to MongoDB at lets-chat');
     }
+});
+
+// Find a new room and send the room object as REST API
+app.get('/findNewRoom', async (req, res) => {
+    res.send(`${rooms.findNewRoom()}`)
 });
 
 httpServer.listen(port, () => {
