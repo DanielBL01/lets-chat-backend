@@ -19,8 +19,8 @@ io.on('connection', socket => {
 
     socket.on('join', room => {
         socket.join(room);
-        rooms.joinRoom(room, socket.id);
-        var room = rooms.findRoom();
+        rooms.joinRoom(socket.id);
+        var room = rooms.findNewRoom();
         console.log(room);
     });
 
@@ -31,7 +31,7 @@ io.on('connection', socket => {
 });
 
 // Test API call to Frontend 
-app.get('/title', (req, res) => {
+app.get('/header', (req, res) => {
     res.send('Lets Chat 😎');
 });
 

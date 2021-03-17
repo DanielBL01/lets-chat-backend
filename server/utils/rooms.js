@@ -1,6 +1,6 @@
 class Rooms {
     constructor() {
-        this.room = {users: []};
+        this.room = {id: 'single_test_room', users: []};
     }
 
     joinRoom(socket_id) {
