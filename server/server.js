@@ -12,22 +12,30 @@ const port = process.env.PORT || 8000;
 
 const { Message } = require('./db/model/message');
 const { Rooms } = require('./utils/rooms');
+
 var rooms = new Rooms();
 
 io.on('connection', socket => {
     console.log('A User has connected');
 
+    // Join a Room (Everyone is in one room right now)
     socket.on('join', room => {
         socket.join(room);
+        socket.to(room).emit('messages', 'User has connected')
         rooms.joinRoom(socket.id);
         var room = rooms.findNewRoom();
         console.log(room);
     });
 
+    socket.on('messages', msg => {
+        var room = rooms.findNewRoom();
+        io.to(room.id).emit('messages', msg);
+    });
+
     socket.on('disconnect', () => {
         var id = socket.id;
         console.log(`User: ${id} has disconnected!`)
-    })
+    });
 });
 
 // Test API call to Frontend 
