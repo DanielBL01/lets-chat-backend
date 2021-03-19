@@ -9,7 +9,6 @@ const io = require('socket.io')(httpServer, {
 });
 
 const port = process.env.PORT || 8000;
-
 const { Message } = require('./db/model/message');
 const { Rooms } = require('./utils/rooms');
 
@@ -18,24 +17,33 @@ var rooms = new Rooms();
 io.on('connection', socket => {
     console.log('A User has connected');
 
-    // Join a Room (Everyone is in one room right now)
-    socket.on('join', room => {
-        socket.join(room);
-        socket.to(room).emit('messages', 'User has connected')
-        rooms.joinRoom(socket.id);
-        var room = rooms.findNewRoom();
-        console.log(room);
+    socket.on('join', room_id => {
+        rooms.joinRoom(room_id, socket.id);
+        socket.join(room_id);
+
+        var room = rooms.findRoom(socket.id);
+        if (room) {
+            if (room.users.length === 1) {
+                io.to(room.id).emit('status', 'matching');
+            } else if (room.users.length === 2) {
+                io.to(room.id).emit('status', 'chatting');
+            }
+        }
     });
 
     socket.on('messages', msg => {
-        var room = rooms.findNewRoom();
+        var room = rooms.findRoom(socket.id);
         io.to(room.id).emit('messages', msg);
     });
 
     socket.on('disconnect', () => {
-        var id = socket.id;
-        console.log(`User: ${id} has disconnected!`)
+        console.log(`User: ${socket.id} has disconnected!`)
     });
+});
+
+// STEP 1 - Find or Create a new Room in the Rooms class and send it to Client
+app.get('/findOrCreateRoom', (req, res) => {
+    res.send(`${rooms.findOrCreateRoom()}`);
 });
 
 // Test API call to Frontend 
@@ -53,11 +61,6 @@ app.get('/message', async (req, res) => {
         console.log(err);
         res.send('message failed to save to MongoDB at lets-chat');
     }
-});
-
-// Find a new room and send the room object as REST API
-app.get('/findNewRoom', async (req, res) => {
-    res.send(`${rooms.findNewRoom()}`)
 });
 
 httpServer.listen(port, () => {

@@ -1,18 +1,55 @@
 class Rooms {
     constructor() {
-        this.room = {id: 'single_test_room', users: []};
+        this.rooms = [];
+    }
+    
+    /**
+     * Create and store a new Rooms object. Generate an id by representing the current date as a single number using the unary + operator
+     * @returns {number} id of room
+     */
+    createRoom() {
+        var room = {id: + Date.now(), users: []};
+        this.rooms.push(room);
+        console.log('createRoom: ' + room.id);
+        return room.id;
     }
 
-    joinRoom(socket_id) {
-        this.room.users.push(socket_id);
+    /**
+     * Every new room is pushed to the highest index of the rooms array. Find if the newest room is empty or has less than two users, else create a new room
+     * @returns {(number|number} id of existing room or id of new room
+     */
+    findOrCreateRoom() {
+        if (this.rooms[this.rooms.length - 1] && this.rooms[this.rooms.length - 1].users.length < 2) {
+            console.log('findOrCreateRoom: ' + this.rooms[this.rooms.length - 1].id);
+            return this.rooms[this.rooms.length - 1].id;
+        } 
+        
+        return this.createRoom();
     }
 
-    leaveRoom(socket_id) {
-        this.room.users.filter(user => user != socket_id);
+    /**
+     * Add User's Socket ID to existing Rooms object
+     * @param {number} room_id - Identify room by ID
+     * @param {string} socket_id - Identify user by their Socket ID
+     */
+    joinRoom(room_id, socket_id) {
+        var room = this.rooms.find((room) => room.id == room_id);
+        if (room) {
+            room.users.push(socket_id);
+        }
     }
 
-    findNewRoom() {
-        return this.room;
+    /**
+     * Find the Rooms object which has the user in its users attribute
+     * @param {string} socket_id - Identify user by their Socket ID
+     * @returns {Rooms} - Rooms object
+     */
+    findRoom(socket_id) {
+        var room = this.rooms.find(room => room.users.includes(socket_id));
+        console.log('findRoom:' + room);
+        if (room) {
+            return room;
+        }
     }
 }
 
