@@ -31,7 +31,14 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('messages', msg => {
+    socket.on('messages', async msg => {
+        try {
+            const message = new Message({message: msg, date: Date.now()});
+            await message.save();
+        } catch (err) {
+            console.log(err);
+        }
+
         var room = rooms.findRoom(socket.id);
         io.to(room.id).emit('messages', msg);
     });
@@ -58,18 +65,6 @@ app.get('/findOrCreateRoom', (req, res) => {
 // Test API call to Frontend 
 app.get('/header', (req, res) => {
     res.send('Lets Chat 😎');
-});
-
-// Test MongoDB Connection to store message data
-app.get('/message', async (req, res) => {
-    try {
-        var message = new Message({message: 'Testing MongoDB', date: Date.now()});
-        await message.save();
-        res.send('message saved to MongoDB at lets-chat');
-    } catch (err) {
-        console.log(err);
-        res.send('message failed to save to MongoDB at lets-chat');
-    }
 });
 
 httpServer.listen(port, () => {
