@@ -36,6 +36,15 @@ io.on('connection', socket => {
         io.to(room.id).emit('messages', msg);
     });
 
+    socket.on('partner', partner => {
+        var room = rooms.findRoom(socket.id);
+        io.to(room.id).emit('newPartner', {
+            id: socket.id,
+            name: partner.name,
+            language: partner.language
+        });
+    });
+
     socket.on('disconnect', () => {
         console.log(`User: ${socket.id} has disconnected!`)
     });
