@@ -46,9 +46,31 @@ class Rooms {
      */
     findRoom(socket_id) {
         var room = this.rooms.find(room => room.users.includes(socket_id));
-        console.log('findRoom:' + room);
         if (room) {
             return room;
+        }
+    }
+
+    /**
+     * Remove User's Socket ID to existing Rooms object users array. If the room afterwards contains 0 users, destory the Room object
+     * @param {string} socket_id - Identify user by their Socket ID
+     */
+    leaveRoom(socket_id) {
+        var room = this.findRoom(socket_id);
+        var room_id = room.id;
+
+        if (room) {
+            room.users = room.users.filter(user => {
+                return user !== socket_id;
+            });
+    
+            if (room.users.length === 0) {
+                this.rooms = this.rooms.filter(room => {
+                    return room !== room;
+                });
+            }
+
+            return room_id;
         }
     }
 }

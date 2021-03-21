@@ -52,6 +52,12 @@ io.on('connection', socket => {
         });
     });
 
+    socket.on('leave', () => {
+        var room_id = rooms.leaveRoom(socket.id);
+        socket.to(room_id).emit('messages', 'Your Partner has left the Chat 😢');
+        socket.leave(room_id);
+    });
+
     socket.on('disconnect', () => {
         console.log(`User: ${socket.id} has disconnected!`)
     });
