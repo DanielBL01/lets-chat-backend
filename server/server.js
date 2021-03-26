@@ -9,8 +9,10 @@ const io = require('socket.io')(httpServer, {
 });
 
 const port = process.env.PORT || 8000;
+
 const { Message } = require('./db/model/message');
 const { Rooms } = require('./utils/rooms');
+const { translateMsg } = require('./utils/translator');
 
 var rooms = new Rooms();
 
@@ -32,15 +34,22 @@ io.on('connection', socket => {
     });
 
     socket.on('messages', async msg => {
+        console.log(msg.message);
+        console.log(msg.message.length);
+        console.log(msg.language);
+        console.log(msg.language.length);
+        var translatedMsg = await translateMsg(msg.message, msg.language);
+        
         try {
-            const message = new Message({message: msg, date: Date.now()});
+            const message = new Message({message: translatedMsg, date: Date.now()});
             await message.save();
         } catch (err) {
             console.log(err);
         }
 
         var room = rooms.findRoom(socket.id);
-        io.to(room.id).emit('messages', msg);
+
+        io.to(room.id).emit('messages', translatedMsg);
     });
 
     socket.on('partner', partner => {
