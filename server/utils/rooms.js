@@ -57,9 +57,10 @@ class Rooms {
      */
     leaveRoom(socket_id) {
         var room = this.findRoom(socket_id);
-        var room_id = room.id;
 
         if (room) {
+            var room_id = room.id;
+            
             room.users = room.users.filter(user => {
                 return user !== socket_id;
             });
