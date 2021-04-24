@@ -14,4 +14,14 @@ async function translateMsg(msg, target) {
   }
 }
 
-module.exports = { translateMsg }
+async function listLang() {
+  const [languages] = await translate.getLanguages();
+  var langList = [];
+  languages.forEach(language => {
+    langList.push(language);
+  });
+  return langList;
+}
+
+// You are allowed to export more than one module with module.exports = {}
+module.exports = { translateMsg, listLang }

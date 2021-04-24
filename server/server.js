@@ -13,6 +13,7 @@ const port = process.env.PORT || 8000;
 const { Message } = require('./db/model/message');
 const { Rooms } = require('./utils/rooms');
 const { translateMsg } = require('./utils/translator');
+const { listLang } = require('./utils/translator');
 
 var rooms = new Rooms();
 
@@ -34,10 +35,6 @@ io.on('connection', socket => {
     });
 
     socket.on('messages', async msg => {
-        console.log(msg.message);
-        console.log(msg.message.length);
-        console.log(msg.language);
-        console.log(msg.language.length);
         var translatedMsg = await translateMsg(msg.message, msg.language);
         
         try {
@@ -80,6 +77,13 @@ app.get('/findOrCreateRoom', (req, res) => {
 // Test API call to Frontend 
 app.get('/header', (req, res) => {
     res.send('Lets Chat 😎');
+});
+
+// Test API call to get All Languages
+// Don't forget to make the router async since the data from listLang is being fetched from the Google API
+app.get('/listAllLanguages', async (req, res) => {
+    const langData = await listLang();
+    res.json(langData);
 });
 
 httpServer.listen(port, () => {
