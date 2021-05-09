@@ -3,16 +3,19 @@ const httpServer = require('http').createServer(app);
 
 const io = require('socket.io')(httpServer, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: 'https://lets-chat-project.herokuapp.com',
     }
 });
 
+const cors = require('cors');
 const port = process.env.PORT || 8000;
 
 const { Message } = require('./db/model/message');
 const { Rooms } = require('./utils/rooms');
 const { translateMsg } = require('./utils/translator');
 const { listLang } = require('./utils/translator');
+
+app.use(cors());
 
 var rooms = new Rooms();
 
