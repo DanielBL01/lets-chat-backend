@@ -23,5 +23,4 @@ async function listLang() {
   return langList;
 }
 
-// You are allowed to export more than one module with module.exports = {}
 module.exports = { translateMsg, listLang }

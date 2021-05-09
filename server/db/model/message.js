@@ -19,18 +19,3 @@ var messageSchema = new Schema({
 var Message = mongoose.model('Message', messageSchema);
 
 module.exports = { Message };
-
-/*
-
-Models are constructors for Schema definitions. An instance of a model is called a Document
-Mongoose documents represent a one-to-one mapping to documents as stored in MongoDB
-Documents in MongoDB are stored in a Collection which are stored in Databases 
-
-Using MongoDB shell
----
-
-If the lets-chat database isn't created, it will be created so you do not have to create the database manually
-Mongoose Model is a MongoDB Collection where your Collection is the lowercase and plural form of your Model Name i.e. 'Message' -> 'messages'
-An instace of your Mongoose model will become a document in the given Collection
-
-*/

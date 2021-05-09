@@ -1,7 +1,6 @@
 const app = require('express')();
 const httpServer = require('http').createServer(app);
 
-// The cors config is needed so that HTTP requests sent by the frontend are allowed to reach the server.
 const io = require('socket.io')(httpServer, {
     cors: {
         origin: 'http://localhost:3000',
@@ -69,18 +68,14 @@ io.on('connection', socket => {
     });
 });
 
-// STEP 1 - Find or Create a new Room in the Rooms class and send it to Client
 app.get('/findOrCreateRoom', (req, res) => {
     res.send(`${rooms.findOrCreateRoom()}`);
 });
 
-// Test API call to Frontend 
 app.get('/header', (req, res) => {
-    res.send('Lets Chat 😎');
+    res.send('Lets Chat');
 });
 
-// Test API call to get All Languages
-// Don't forget to make the router async since the data from listLang is being fetched from the Google API
 app.get('/listAllLanguages', async (req, res) => {
     const langData = await listLang();
     res.json(langData);
