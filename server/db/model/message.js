@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const mongoDB = 'mongodb://127.0.0.1:27017/lets-chat';
+const MONGODB_URL = process.env.MONGODB_URL;
 
-mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(MONGODB_URL, {useNewUrlParser: true, useUnifiedTopology: true});
 
 var messageSchema = new Schema({
     message: {
