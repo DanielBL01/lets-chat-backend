@@ -8,6 +8,7 @@ const io = require('socket.io')(httpServer, {
 });
 
 const cors = require('cors');
+const schedule = require('node-schedule');
 const port = process.env.PORT || 8000;
 
 const { Message } = require('./db/model/message');
@@ -82,6 +83,10 @@ app.get('/header', (req, res) => {
 app.get('/listAllLanguages', async (req, res) => {
     const langData = await listLang();
     res.json(langData);
+});
+
+const job = schedule.scheduleJob('*/30 * * * *', () => {
+    console.log('This job is running to prevent deep sleep...');
 });
 
 httpServer.listen(port, () => {
