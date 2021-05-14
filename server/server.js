@@ -1,5 +1,6 @@
 const app = require('express')();
-const httpServer = require('http').createServer(app);
+const http = require('http');
+const httpServer = http.createServer(app);
 
 const io = require('socket.io')(httpServer, {
     cors: {
@@ -86,7 +87,8 @@ app.get('/listAllLanguages', async (req, res) => {
 });
 
 const job = schedule.scheduleJob('*/30 * * * *', () => {
-    console.log('This job is running to prevent deep sleep...');
+    http.get('https://lets-chat-project.herokuapp.com/');
+    http.get('https://lets-chat-server1.herokuapp.com/');
 });
 
 httpServer.listen(port, () => {
